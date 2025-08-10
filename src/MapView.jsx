@@ -60,12 +60,12 @@ const MapView = ({ layers = { ghats: false, temples: false, wards: false, restau
 
       ghatsDataRef.current.setStyle({ fillColor: '#2563eb', strokeColor: '#1e3a8a', strokeWeight: 2, fillOpacity: 0.45 });
       wardsDataRef.current.setStyle({ fillOpacity: 0, strokeColor: '#dc2626', strokeWeight: 2 });
-      // Restaurant points styled with provided image icon (place /public/restaurant.png)
+      // Restaurant points styled with provided image icon (smaller size)
       restaurantsDataRef.current.setStyle(() => ({
         icon: {
           url: '/restaurant-building.png',
-          scaledSize: new google.maps.Size(32, 32),
-          anchor: new google.maps.Point(16, 16),
+          scaledSize: new google.maps.Size(16, 16),
+          anchor: new google.maps.Point(8, 8),
         }
       }));
 
