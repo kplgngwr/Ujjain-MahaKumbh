@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 
-// layers prop: { ghats, temples, wards, hospitals, hotels }
+// layers prop: { ghats, temples, wards, restaurants, hospitals, hotels }
 // Default: all off; parent controls activation
-const MapView = ({ layers = { ghats: false, temples: false, wards: false, hospitals: false, hotels: false } }) => {
+const MapView = ({ layers = { ghats: false, temples: false, wards: false, restaurants: false, hospitals: false, hotels: false }, toggleLayer }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const infoWindowRef = useRef(null);
@@ -19,15 +19,18 @@ const MapView = ({ layers = { ghats: false, temples: false, wards: false, hospit
   const ghatsFeaturesRef = useRef([]);
   const templeMarkersRef = useRef([]);
   const wardsFeaturesRef = useRef([]);
+  const restaurantFeaturesRef = useRef([]);
   // Separate data layer refs so polygon sets don't interfere
   const ghatsDataRef = useRef(null);
   const wardsDataRef = useRef(null);
+  const restaurantsDataRef = useRef(null);
   const hospitalMarkersRef = useRef([]);
   const hotelMarkersRef = useRef([]);
 
   const GHATS_URL = 'https://services5.arcgis.com/73n8CSGpSSyHr1T9/arcgis/rest/services/Simhastha_Ghats/FeatureServer/0/query?where=1=1&outFields=*&f=geojson';
   const TEMPLES_URL = 'https://services5.arcgis.com/73n8CSGpSSyHr1T9/arcgis/rest/services/Temples_Ujjain_20250808110129/FeatureServer/0/query?where=1=1&outFields=*&f=geojson';
   const WARDS_URL = 'https://livingatlas.esri.in/server/rest/services/Ujjain_Ward_Boundary/MapServer/0/query?where=1=1&outFields=*&f=geojson';
+  const RESTAURANTS_URL = 'https://services5.arcgis.com/73n8CSGpSSyHr1T9/arcgis/rest/services/Restaurants_Ujjain_20250810190258/FeatureServer/0/query?where=1=1&outFields=*&f=geojson';
 
   // (Layer toggling handled by parent)
 
@@ -53,22 +56,35 @@ const MapView = ({ layers = { ghats: false, temples: false, wards: false, hospit
       // Independent data layers
       ghatsDataRef.current = new google.maps.Data({ map: null });
       wardsDataRef.current = new google.maps.Data({ map: null });
+      restaurantsDataRef.current = new google.maps.Data({ map: null });
 
       ghatsDataRef.current.setStyle({ fillColor: '#2563eb', strokeColor: '#1e3a8a', strokeWeight: 2, fillOpacity: 0.45 });
       wardsDataRef.current.setStyle({ fillOpacity: 0, strokeColor: '#dc2626', strokeWeight: 2 });
+      // Restaurant points styled with provided image icon (place /public/restaurant.png)
+      restaurantsDataRef.current.setStyle(() => ({
+        icon: {
+          url: '/restaurant-building.png',
+          scaledSize: new google.maps.Size(32, 32),
+          anchor: new google.maps.Point(16, 16),
+        }
+      }));
 
       const bindClicks = (dataLayer) => {
         dataLayer.addListener('click', (event) => {
           if (!event || !event.feature) return;
           const f = event.feature;
-          const name = f.getProperty('Ghat_Name') || f.getProperty('Name') || f.getProperty('Temple_Name') || f.getProperty('Temple Name') || f.getProperty('GHAT_NAME') || f.getProperty('Ward_No') || f.getProperty('Ward_Name') || f.getProperty('WARD_NO') || 'Unnamed Feature';
+          const name = f.getProperty('Ghat_Name') || f.getProperty('Name') || f.getProperty('Temple_Name') || 
+                       f.getProperty('Temple Name') || f.getProperty('GHAT_NAME') || f.getProperty('Ward_No') || 
+                       f.getProperty('Ward_Name') || f.getProperty('WARD_NO') || f.getProperty('Restaurant_Name') || 
+                       f.getProperty('Restaurant Name') || 'Unnamed Feature';
           infoWindowRef.current.setContent(`<div style="min-width:140px;font:500 13px system-ui">${name}</div>`);
           infoWindowRef.current.setPosition(event.latLng);
           infoWindowRef.current.open(mapInstance);
         });
       };
-      bindClicks(ghatsDataRef.current);
-      bindClicks(wardsDataRef.current);
+  bindClicks(ghatsDataRef.current);
+  bindClicks(wardsDataRef.current);
+  bindClicks(restaurantsDataRef.current);
     });
 
     return () => {
@@ -173,6 +189,26 @@ const MapView = ({ layers = { ghats: false, temples: false, wards: false, hospit
       }
     };
 
+    // RESTAURANTS (points via dedicated data layer)
+    const handleRestaurants = async () => {
+      const dataLayer = restaurantsDataRef.current; if (!dataLayer) return;
+      if (layers.restaurants) {
+        dataLayer.setMap(map);
+        if (!geoJsonCache.current.restaurants) {
+          try {
+            const res = await fetch(RESTAURANTS_URL);
+            const data = await res.json();
+            geoJsonCache.current.restaurants = data;
+          } catch (e) { console.error('Failed to fetch restaurants', e); return; }
+        }
+        if (restaurantFeaturesRef.current.length === 0) {
+          restaurantFeaturesRef.current = dataLayer.addGeoJson(geoJsonCache.current.restaurants);
+        }
+      } else {
+        dataLayer.setMap(null);
+      }
+    };
+
     // HOSPITALS (placeholder - implement endpoint when available)
     const handleHospitals = async () => {
       const map = mapInstanceRef.current; if (!map) return;
@@ -214,7 +250,8 @@ const MapView = ({ layers = { ghats: false, temples: false, wards: false, hospit
 
     handleGhats();
     handleTemples();
-    handleWards();
+  handleWards();
+  handleRestaurants();
     handleHospitals();
     handleHotels();
   }, [layers]);
@@ -247,7 +284,7 @@ const MapView = ({ layers = { ghats: false, temples: false, wards: false, hospit
   return (
     <div className="relative w-full h-full">
       {/* Dynamic legend for active layers */}
-  { (layers?.ghats || layers?.temples || layers?.wards || layers?.hospitals || layers?.hotels || layers?.lostFound || layers?.publicToilets || layers?.policeStations || layers?.busStand || layers?.atms || layers?.entryExit || layers?.fireStations || layers?.stayTents) && (
+  { (layers?.ghats || layers?.temples || layers?.wards || layers?.restaurants || layers?.hospitals || layers?.hotels || layers?.lostFound || layers?.publicToilets || layers?.policeStations || layers?.busStand || layers?.atms || layers?.entryExit || layers?.fireStations || layers?.stayTents) && (
         <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur rounded-2xl shadow border border-teal-300 px-3.5 py-2.5 text-[11px] font-medium space-y-1 min-w-[130px] text-slate-800">
           <div className="uppercase tracking-wide text-[10px] text-teal-700 font-semibold mb-1">Legend</div>
           {layers.ghats && (
@@ -258,6 +295,9 @@ const MapView = ({ layers = { ghats: false, temples: false, wards: false, hospit
           )}
           {layers.wards && (
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-sm bg-red-500/20 border border-red-600 shadow" /> <span className="text-slate-700">Wards</span></div>
+          )}
+          {layers.restaurants && (
+            <div className="flex items-center gap-2"><img src="/restaurant-building.png" alt="Restaurant" className="w-4 h-4" /> <span className="text-slate-700">Restaurants</span></div>
           )}
           {layers.hospitals && (
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-pink-500 border border-pink-700 shadow" /> <span className="text-slate-700">Hospitals</span></div>
@@ -291,7 +331,8 @@ const MapView = ({ layers = { ghats: false, temples: false, wards: false, hospit
           )}
         </div>
       )}
-      {/* Basemap chooser trigger (bottom-left) */}
+  {/* Basemap chooser trigger (bottom-left) */}
+  {/* Removed inline quick layer toggles (redundant with left panel) */}
       <div className="absolute bottom-4 left-4 z-20">
         <button
           aria-label="Basemap chooser"

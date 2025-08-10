@@ -17,6 +17,7 @@ function App() {
     ghats: false,
     temples: false,
     wards: false,
+    restaurants: false, // Add restaurant layer
     hospitals: false,
     hotels: false,
     lostFound: false,
@@ -76,7 +77,7 @@ function App() {
               <button className="text-xs text-amber-300 inline-flex items-center gap-1"><Filter className="w-3 h-3" />{t('manage')}</button>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              {[{ key: 'ghats', label: 'Ghats' }, { key: 'temples', label: 'Temples' }, { key: 'wards', label: 'Wards' }, { key: 'hospitals', label: 'Hospitals' }, { key: 'hotels', label: 'Hotels' }, { key: 'lostFound', label: 'Lost & Found' }, { key: 'publicToilets', label: 'Public Toilets' }, { key: 'policeStations', label: 'Police Stations' }, { key: 'busStand', label: 'Bus Stand' }, { key: 'atms', label: 'ATM' }, { key: 'entryExit', label: 'Entry/Exit' }, { key: 'fireStations', label: 'Fire Station' }, { key: 'stayTents', label: 'Stay Tents' }]
+              {[{ key: 'ghats', label: 'Ghats' }, { key: 'temples', label: 'Temples' }, { key: 'wards', label: 'Wards' }, { key: 'restaurants', label: 'Restaurants' }, { key: 'hospitals', label: 'Hospitals' }, { key: 'hotels', label: 'Hotels' }, { key: 'lostFound', label: 'Lost & Found' }, { key: 'publicToilets', label: 'Public Toilets' }, { key: 'policeStations', label: 'Police Stations' }, { key: 'busStand', label: 'Bus Stand' }, { key: 'atms', label: 'ATM' }, { key: 'entryExit', label: 'Entry/Exit' }, { key: 'fireStations', label: 'Fire Station' }, { key: 'stayTents', label: 'Stay Tents' }]
                 .map(l => (
                   <TogglePill key={l.key} label={l.label} checked={filters[l.key]} onChange={() => toggleFilter(l.key)} />
                 ))}
@@ -107,7 +108,7 @@ function App() {
         </aside>
         <section className="lg:col-span-9 flex flex-col space-y-4 h-full overflow-y-auto min-h-0 scrollbar-hide">
           <div className="relative flex-1 min-h-[560px] rounded-3xl overflow-hidden border border-indigo-300/25 bg-indigo-900/40">
-            <MapView layers={filters} />
+            <MapView layers={filters} toggleLayer={toggleFilter} />
           </div>
           <div className="mt-2 border-t border-indigo-400/20 pt-4 pb-6 text-sm text-indigo-200 flex flex-wrap items-center justify-between gap-2">
             <p>{t('copyright')} • {t('midnightAarti')}</p>
