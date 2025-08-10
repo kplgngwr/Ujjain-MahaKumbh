@@ -7,6 +7,7 @@ import { Diya, MandalaBG, NavPill, Chip, TogglePill } from './themeComponents';
 function App() {
   const [open, setOpen] = React.useState(false);
   const [showAI, setShowAI] = React.useState(false);
+  const [showAnnouncement, setShowAnnouncement] = React.useState(true); // show popup each load
   const [activeTab, setActiveTab] = React.useState('Home');
   const [dark, setDark] = React.useState(true);
   // Start with no layers selected; user can enable manually
@@ -116,6 +117,18 @@ function App() {
       <button aria-label="Open AI Assistant" onClick={() => setShowAI(true)} className="fixed bottom-5 right-5 z-40 h-14 w-14 rounded-full bg-gradient-to-br from-amber-400 to-rose-400 text-indigo-950 shadow-xl flex items-center justify-center hover:shadow-amber-400/70 hover:scale-[1.03] active:scale-95">
         <Diya className="w-8 h-8" />
       </button>
+
+      {showAnnouncement && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div role="dialog" aria-modal="true" className="relative max-w-4xl w-full mx-4 rounded-3xl overflow-hidden shadow-2xl border border-amber-400/30 bg-indigo-950/80">
+            <button aria-label="Close announcement" onClick={() => setShowAnnouncement(false)} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-amber-200 flex items-center justify-center border border-amber-300/30">
+              <X className="w-4 h-4" />
+            </button>
+            <img src="/announcement-hero.png" alt="Ujjain Mahakumbh Simhastha 2028 announcement" className="w-full h-auto object-cover" />
+          </div>
+        </div>
+      )}
 
       {showAI && (
         <div className="fixed inset-0 z-50">
