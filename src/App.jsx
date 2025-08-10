@@ -1,7 +1,7 @@
 
 import React, { useMemo } from 'react';
 import MapView from './MapView';
-import { MapPin, Hotel, Landmark, Car, DoorOpen, Menu, X, Globe, Filter, ParkingCircle, Route, UsersRound, MessageSquare, Layers, Sun, Moon, CalendarDays, Zap } from 'lucide-react';
+import { MapPin, Hotel, Landmark, DoorOpen, Menu, X, Globe, Filter, ParkingCircle, UsersRound, MessageSquare, Layers, Sun, Moon, CalendarDays, Zap } from 'lucide-react';
 import { Diya, MandalaBG, NavPill, Chip, TogglePill } from './themeComponents';
 
 function App() {
@@ -113,7 +113,7 @@ function App() {
         </div>
       )}
 
-      /* Global floating AI button (outside map) */
+      
         <button
           aria-label="Open AI Assistant"
           onClick={() => setShowAI(true)}
@@ -132,7 +132,7 @@ function App() {
           return (
             <div className="fixed inset-0 z-[70]">
           <video
-            src="/public/Diya_and_Water_Flow_Video.mp4"
+            src="/Diya_and_Water_Flow_Video.mp4"
             alt="Ujjain Mahakumbh Simhastha 2028 announcement"
             className="w-full h-full object-cover"
             autoPlay
