@@ -77,7 +77,7 @@ function App() {
               <button className="text-xs text-amber-300 inline-flex items-center gap-1"><Filter className="w-3 h-3" />{t('manage')}</button>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              {[{ key: 'ghats', label: 'Ghats' }, { key: 'temples', label: 'Temples' }, { key: 'wards', label: 'Wards' }, { key: 'restaurants', label: 'Restaurants' }, { key: 'hospitals', label: 'Hospitals' }, { key: 'hotels', label: 'Hotels' }, { key: 'lostFound', label: 'Lost & Found' }, { key: 'publicToilets', label: 'Public Toilets' }, { key: 'policeStations', label: 'Police Stations' }, { key: 'busStand', label: 'Bus Stand' }, { key: 'atms', label: 'ATM' }, { key: 'entryExit', label: 'Entry/Exit' }, { key: 'fireStations', label: 'Fire Station' }, { key: 'stayTents', label: 'Stay Tents' }]
+              {[{ key: 'ghats', label: t('ghats') }, { key: 'temples', label: t('temples') }, { key: 'wards', label: t('wards') }, { key: 'restaurants', label: t('restaurants') }, { key: 'hospitals', label: t('hospitals') }, { key: 'hotels', label: t('hotels') }, { key: 'lostFound', label: t('lostFound') }, { key: 'publicToilets', label: t('publicToilets') }, { key: 'policeStations', label: t('policeStations') }, { key: 'busStand', label: t('busStand') }, { key: 'atms', label: t('atm') }, { key: 'entryExit', label: t('entryExit') }, { key: 'fireStations', label: t('fireStation') }, { key: 'stayTents', label: t('stayTents') }]
                 .map(l => (
                   <TogglePill key={l.key} label={l.label} checked={filters[l.key]} onChange={() => toggleFilter(l.key)} />
                 ))}
@@ -121,8 +121,8 @@ function App() {
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/25" onClick={() => setOpen(false)} />
           <div className="absolute left-0 top-0 bottom-0 w-80 bg-indigo-950/95 text-indigo-50 shadow-2xl p-4 space-y-2">
-            <div className="flex items-center justify-between"><div className="flex items-center gap-2"><Diya /><span className="font-semibold">Menu</span></div><button onClick={() => setOpen(false)}><X className="w-5 h-5" /></button></div>
-            {[{ icon: MapPin, label: 'Home' }, { icon: Landmark, label: 'Ghats' }, { icon: Hotel, label: 'Accommodation' }, { icon: ParkingCircle, label: 'Parking & Shuttle' }, { icon: DoorOpen, label: 'Entry/Exit' }, { icon: Landmark, label: 'Temples' }].map(n => (
+            <div className="flex items-center justify-between"><div className="flex items-center gap-2"><Diya /><span className="font-semibold">{t('menu')}</span></div><button onClick={() => setOpen(false)}><X className="w-5 h-5" /></button></div>
+            {[{ icon: MapPin, label: t('home') }, { icon: Landmark, label: t('ghats') }, { icon: Hotel, label: t('accommodation') }, { icon: ParkingCircle, label: t('parking') }, { icon: DoorOpen, label: t('entryExit') }, { icon: Landmark, label: t('temples') }].map(n => (
               <NavPill key={n.label} icon={n.icon} label={n.label} active={activeTab === n.label} onClick={() => setActiveTab(n.label)} />
             ))}
           </div>
