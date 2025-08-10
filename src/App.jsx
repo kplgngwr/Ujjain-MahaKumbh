@@ -113,38 +113,79 @@ function App() {
         </div>
       )}
 
-      {/* Global floating AI button (outside map) */}
-      <button aria-label="Open AI Assistant" onClick={() => setShowAI(true)} className="fixed bottom-5 right-5 z-40 h-14 w-14 rounded-full bg-gradient-to-br from-amber-400 to-rose-400 text-indigo-950 shadow-xl flex items-center justify-center hover:shadow-amber-400/70 hover:scale-[1.03] active:scale-95">
-        <Diya className="w-8 h-8" />
-      </button>
+      /* Global floating AI button (outside map) */
+        <button
+          aria-label="Open AI Assistant"
+          onClick={() => setShowAI(true)}
+          className="fixed bottom-5 right-5 z-40 h-14 w-14 rounded-full bg-gradient-to-br from-amber-400 to-rose-400 text-indigo-950 shadow-xl flex items-center justify-center hover:shadow-amber-400/70 hover:scale-[1.03] active:scale-95"
+        >
+          <Diya className="w-8 h-8" />
+        </button>
 
-      {showAnnouncement && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          <div role="dialog" aria-modal="true" className="relative max-w-4xl w-full mx-4 rounded-3xl overflow-hidden shadow-2xl border border-amber-400/30 bg-indigo-950/80">
-            <button aria-label="Close announcement" onClick={() => setShowAnnouncement(false)} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-amber-200 flex items-center justify-center border border-amber-300/30">
-              <X className="w-4 h-4" />
-            </button>
-            <img src="/announcement-hero.png" alt="Ujjain Mahakumbh Simhastha 2028 announcement" className="w-full h-auto object-cover" />
-          </div>
-        </div>
-      )}
-
-      {showAI && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowAI(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-indigo-950/95 text-indigo-50 shadow-2xl flex flex-col">
-            <div className="p-4 border-b border-indigo-400/20 flex items-center justify-between"><div className="flex items-center gap-2"><MessageSquare className="w-5 h-5 text-amber-300" /><span className="font-semibold">Anubhava AI</span></div><button onClick={() => setShowAI(false)}><X className="w-5 h-5" /></button></div>
-            <div className="p-4 space-y-3 overflow-auto flex-1">
-              <div className="text-xs text-amber-200">You’re chatting about: <b>Context</b></div>
-              <div className="bg-indigo-900/60 border border-indigo-300/25 rounded-2xl p-3 text-sm">Ask questions about ghats, temples or travel logistics.</div>
+        {showAnnouncement && (() => {
+          if (!window.__announcementTimer) {
+            window.__announcementTimer = setTimeout(() => {
+          setShowAnnouncement(false);
+          window.__announcementTimer = null;
+            }, 3000);
+          }
+          return (
+            <div className="fixed inset-0 z-[70]">
+          <video
+            src="/public/Diya_and_Water_Flow_Video.mp4"
+            alt="Ujjain Mahakumbh Simhastha 2028 announcement"
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <button
+            aria-label="Close announcement"
+            onClick={() => {
+              clearTimeout(window.__announcementTimer);
+              window.__announcementTimer = null;
+              setShowAnnouncement(false);
+            }}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-amber-200 flex items-center justify-center border border-amber-300/30 backdrop-blur-sm"
+          >
+            <X className="w-5 h-5" />
+          </button>
             </div>
-            <div className="p-3 border-t border-indigo-400/20 flex gap-2"><input className="flex-1 px-3 py-2 rounded-xl bg-indigo-900/60 border border-indigo-300/25 placeholder-indigo-200/70" placeholder="Ask about routes, amenities, timings…" /><button className="px-4 py-2 rounded-xl bg-amber-400 text-indigo-950">Send</button></div>
-          </div>
-        </div>
-      )}
+          );
+        })()}
 
-  {/* Footer moved inside right scroll column */}
+        {showAI && (
+          <div className="fixed inset-0 z-50">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setShowAI(false)} />
+            <div className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-indigo-950/95 text-indigo-50 shadow-2xl flex flex-col">
+          <div className="p-4 border-b border-indigo-400/20 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-amber-300" />
+              <span className="font-semibold">Anubhava AI</span>
+            </div>
+            <button onClick={() => setShowAI(false)}>
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="p-4 space-y-3 overflow-auto flex-1">
+            <div className="text-xs text-amber-200">You’re chatting about: <b>Context</b></div>
+            <div className="bg-indigo-900/60 border border-indigo-300/25 rounded-2xl p-3 text-sm">
+              Ask questions about ghats, temples or travel logistics.
+            </div>
+          </div>
+          <div className="p-3 border-t border-indigo-400/20 flex gap-2">
+            <input
+              className="flex-1 px-3 py-2 rounded-xl bg-indigo-900/60 border border-indigo-300/25 placeholder-indigo-200/70"
+              placeholder="Ask about routes, amenities, timings…"
+            />
+            <button className="px-4 py-2 rounded-xl bg-amber-400 text-indigo-950">Send</button>
+          </div>
+            </div>
+          </div>
+        )}
+
+        {/* Footer moved inside right scroll column */}
     </div>
   );
 }
