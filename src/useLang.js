@@ -1,0 +1,66 @@
+import { useState } from 'react';
+
+const translations = {
+  en: {
+    home: 'Home',
+    ghats: 'Ghats',
+    accommodation: 'Accommodation',
+    parking: 'Parking & Shuttle',
+    entryExit: 'Entry/Exit',
+    temples: 'Temples',
+    layers: 'Layers',
+    manage: 'Manage',
+    dayRoutes: 'Day & Routes',
+    regularDay: 'Regular Day',
+    shahiSnan: 'Shahi Snan',
+    festival: 'Festival / Parva',
+    dynamicRouting: 'Dynamic routing active',
+    liveTraffic: 'Live traffic (5 min)',
+    aiAsk: 'Ask Anubhav AI',
+    send: 'Send',
+    aiTitle: 'Anubhava AI',
+    aiContext: 'You’re chatting about: Context',
+    aiPrompt: 'Ask questions about ghats, temples or travel logistics.',
+    aiPlaceholder: 'Ask about routes, amenities, timings…',
+    midnightAarti: 'Midnight Aarti Theme',
+    copyright: '© 2025 Ujjain Mahakumbh',
+    devotionalUi: 'Indigo · Gold devotional UI',
+    enHi: 'EN / HI',
+    light: 'Light',
+    dark: 'Dark',
+  },
+  hi: {
+    home: 'होम',
+    ghats: 'घाट',
+    accommodation: 'आवास',
+    parking: 'पार्किंग और शटल',
+    entryExit: 'प्रवेश/निकास',
+    temples: 'मंदिर',
+    layers: 'परतें',
+    manage: 'प्रबंधित करें',
+    dayRoutes: 'दिन और मार्ग',
+    regularDay: 'सामान्य दिन',
+    shahiSnan: 'शाही स्नान',
+    festival: 'त्योहार / पर्व',
+    dynamicRouting: 'डायनामिक रूटिंग सक्रिय',
+    liveTraffic: 'लाइव ट्रैफिक (5 मिनट)',
+    aiAsk: 'अनुभव एआई से पूछें',
+    send: 'भेजें',
+    aiTitle: 'अनुभव एआई',
+    aiContext: 'आप चैट कर रहे हैं: संदर्भ',
+    aiPrompt: 'घाट, मंदिर या यात्रा के बारे में पूछें।',
+    aiPlaceholder: 'मार्ग, सुविधाएं, समय पूछें…',
+    midnightAarti: 'मिडनाइट आरती थीम',
+    copyright: '© 2025 उज्जैन महाकुंभ',
+    devotionalUi: 'इंडिगो · गोल्ड डिवोशनल यूआई',
+    enHi: 'EN / HI',
+    light: 'लाइट',
+    dark: 'डार्क',
+  },
+};
+
+export function useLang() {
+  const [lang, setLang] = useState('en');
+  const t = (key) => translations[lang][key] || key;
+  return { lang, setLang, t };
+}
