@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide scrollbars (still scrollable) */
+.scrollbar-hide::-webkit-scrollbar { width: 0px; height: 0px; }
+.scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+.scrollbar-hide::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-hide::-webkit-scrollbar-thumb { background: transparent; }

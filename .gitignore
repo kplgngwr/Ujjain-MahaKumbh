@@ -1,0 +1,77 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment & API keys
+.env
+.env.*
+!.env.example
+
+# Vite / build caches
+.vite
+vite.config.timestamp-* 
+
+# Coverage / test
+coverage
+*.lcov
+
+# TypeScript build info (if added later)
+*.tsbuildinfo
+
+# Lockfiles (choose one to commit if you prefer deterministic builds)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Storybook / temporary build outputs
+storybook-static
+.storybook-cache
+
+# Optional OS / misc
+Thumbs.db
+ehthumbs.db
+.idea/
+*.iml
+
+# VSCode local settings (allow recommended extensions)
+.vscode/*
+!.vscode/extensions.json
+
+# Mac / system
+.DS_Store
+
+# Logs (extended)
+*.stackdump
+npm-cache
+node_modules/.cache
+
+# Diagnostic / debug
+.eslintcache
+.stylelintcache
+
+# Temporary files
+tmp/
+temp/
+.temp
+*.tmp
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
