@@ -77,32 +77,39 @@ function App() {
 
       <main className="max-w-7xl mx-auto px-4 py-4 grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 w-full overflow-hidden min-h-0">
         <aside className="lg:col-span-3 space-y-4 h-full overflow-y-auto pr-1 flex flex-col min-h-0 scrollbar-hide">
-          <section className="rounded-2xl border border-indigo-300/25 bg-indigo-950/40 p-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold flex items-center gap-2"><Layers className="w-4 h-4 text-amber-300" /> {t('layers')}</h2>
-              <button className="text-xs text-amber-300 inline-flex items-center gap-1"><Filter className="w-3 h-3" />{t('manage')}</button>
-            </div>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              {[{ key: 'ghats', label: t('ghats') }, { key: 'temples', label: t('temples') }, { key: 'wards', label: t('wards') }, { key: 'restaurants', label: t('restaurants') }, { key: 'hospitals', label: t('hospitals') }, { key: 'hotels', label: t('hotels') }, { key: 'lostFound', label: t('lostFound') }, { key: 'publicToilets', label: t('publicToilets') }, { key: 'policeStations', label: t('policeStations') }, { key: 'busStand', label: t('busStand') }, { key: 'atms', label: t('atm') }, { key: 'entryExit', label: t('entryExit') }, { key: 'fireStations', label: t('fireStation') }, { key: 'stayTents', label: t('stayTents') }]
-                .map(l => (
-                  <TogglePill key={l.key} label={l.label} checked={filters[l.key]} onChange={() => toggleFilter(l.key)} />
-                ))}
-            </div>
-          </section>
-          <section className="rounded-2xl border border-indigo-300/25 bg-indigo-950/40 p-4">
-            <h2 className="font-semibold flex items-center gap-2 text-amber-300"><CalendarDays className="w-4 h-4" /> {t('dayRoutes')}</h2>
-            <div className="mt-3 space-y-3 text-sm">
-              <select value={dayType} onChange={e => setDayType(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-indigo-900/50 border border-indigo-300/30 focus:outline-none focus:border-amber-400 text-indigo-100">
-                <option className="bg-indigo-900">{t('regularDay')}</option>
-                <option className="bg-indigo-900">{t('shahiSnan')}</option>
-                <option className="bg-indigo-900">{t('festival')}</option>
-              </select>
-              <div className="flex flex-col gap-2 text-[11px] font-medium">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-200/15 border border-amber-300/30 text-amber-200"><UsersRound className="w-3.5 h-3.5" /> {t('dynamicRouting')}</div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-900/60 border border-indigo-300/30 text-indigo-200"><Zap className="w-3.5 h-3.5 text-amber-300" /> {t('liveTraffic')}</div>
-              </div>
-            </div>
-          </section>
+          {/* Home Tab Content */}
+          {activeTab === t('home') && (
+            <>
+              <section className="rounded-2xl border border-indigo-300/25 bg-indigo-950/40 p-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-semibold flex items-center gap-2"><Layers className="w-4 h-4 text-amber-300" /> {t('layers')}</h2>
+                  <button className="text-xs text-amber-300 inline-flex items-center gap-1"><Filter className="w-3 h-3" />{t('manage')}</button>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  {[{ key: 'ghats', label: t('ghats') }, { key: 'temples', label: t('temples') }, { key: 'wards', label: t('wards') }, { key: 'restaurants', label: t('restaurants') }, { key: 'hospitals', label: t('hospitals') }, { key: 'hotels', label: t('hotels') }, { key: 'lostFound', label: t('lostFound') }, { key: 'publicToilets', label: t('publicToilets') }, { key: 'policeStations', label: t('policeStations') }, { key: 'busStand', label: t('busStand') }, { key: 'atms', label: t('atm') }, { key: 'entryExit', label: t('entryExit') }, { key: 'fireStations', label: t('fireStation') }, { key: 'stayTents', label: t('stayTents') }]
+                    .map(l => (
+                      <TogglePill key={l.key} label={l.label} checked={filters[l.key]} onChange={() => toggleFilter(l.key)} />
+                    ))}
+                </div>
+              </section>
+              <section className="rounded-2xl border border-indigo-300/25 bg-indigo-950/40 p-4">
+                <h2 className="font-semibold flex items-center gap-2 text-amber-300"><CalendarDays className="w-4 h-4" /> {t('dayRoutes')}</h2>
+                <div className="mt-3 space-y-3 text-sm">
+                  <select value={dayType} onChange={e => setDayType(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-indigo-900/50 border border-indigo-300/30 focus:outline-none focus:border-amber-400 text-indigo-100">
+                    <option className="bg-indigo-900">{t('regularDay')}</option>
+                    <option className="bg-indigo-900">{t('shahiSnan')}</option>
+                    <option className="bg-indigo-900">{t('festival')}</option>
+                  </select>
+                  <div className="flex flex-col gap-2 text-[11px] font-medium">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-200/15 border border-amber-300/30 text-amber-200"><UsersRound className="w-3.5 h-3.5" /> {t('dynamicRouting')}</div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-900/60 border border-indigo-300/30 text-indigo-200"><Zap className="w-3.5 h-3.5 text-amber-300" /> {t('liveTraffic')}</div>
+                  </div>
+                </div>
+              </section>
+            </>
+          )}
+          
+          {/* Temples Tab Content */}
           {activeTab === t('temples') && (
             <>
               <div className="rounded-2xl border border-indigo-300/25 bg-indigo-950/40 p-4">
@@ -214,6 +221,72 @@ function App() {
                 </div>
               </section>
             </>
+          )}
+          
+          {/* Ghats Tab Content */}
+          {activeTab === t('ghats') && (
+            <section className="rounded-2xl border border-indigo-300/25 bg-indigo-950/40 p-4">
+              <h2 className="font-semibold flex items-center gap-2"><Landmark className="w-4 h-4 text-amber-300" /> {t('ghats')}</h2>
+              <div className="mt-3 space-y-3">
+                <div className="relative">
+                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-indigo-300" />
+                  <input 
+                    type="text" 
+                    placeholder={`${t('search')} ${t('ghats')}...`} 
+                    className="w-full pl-8 pr-3 py-1.5 text-xs bg-indigo-900/50 rounded-lg border border-indigo-300/20 focus:outline-none focus:border-amber-400 placeholder-indigo-300/70"
+                  />
+                </div>
+                {/* Placeholder for ghats list */}
+                <div className="text-center text-indigo-200 py-8">
+                  <p>{t('ghats')} {t('content')} {t('coming')} {t('soon')}</p>
+                </div>
+              </div>
+            </section>
+          )}
+          
+          {/* Accommodation Tab Content */}
+          {activeTab === t('accommodation') && (
+            <section className="rounded-2xl border border-indigo-300/25 bg-indigo-950/40 p-4">
+              <h2 className="font-semibold flex items-center gap-2"><Hotel className="w-4 h-4 text-amber-300" /> {t('accommodation')}</h2>
+              <div className="mt-3 space-y-3">
+                <div className="relative">
+                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-indigo-300" />
+                  <input 
+                    type="text" 
+                    placeholder={`${t('search')} ${t('accommodation')}...`} 
+                    className="w-full pl-8 pr-3 py-1.5 text-xs bg-indigo-900/50 rounded-lg border border-indigo-300/20 focus:outline-none focus:border-amber-400 placeholder-indigo-300/70"
+                  />
+                </div>
+                {/* Placeholder for accommodation list */}
+                <div className="text-center text-indigo-200 py-8">
+                  <p>{t('accommodation')} {t('content')} {t('coming')} {t('soon')}</p>
+                </div>
+              </div>
+            </section>
+          )}
+          
+          {/* Parking Tab Content */}
+          {activeTab === t('parking') && (
+            <section className="rounded-2xl border border-indigo-300/25 bg-indigo-950/40 p-4">
+              <h2 className="font-semibold flex items-center gap-2"><ParkingCircle className="w-4 h-4 text-amber-300" /> {t('parking')}</h2>
+              <div className="mt-3 space-y-3">
+                <div className="text-center text-indigo-200 py-8">
+                  <p>{t('parking')} {t('content')} {t('coming')} {t('soon')}</p>
+                </div>
+              </div>
+            </section>
+          )}
+          
+          {/* Entry/Exit Tab Content */}
+          {activeTab === t('entryExit') && (
+            <section className="rounded-2xl border border-indigo-300/25 bg-indigo-950/40 p-4">
+              <h2 className="font-semibold flex items-center gap-2"><DoorOpen className="w-4 h-4 text-amber-300" /> {t('entryExit')}</h2>
+              <div className="mt-3 space-y-3">
+                <div className="text-center text-indigo-200 py-8">
+                  <p>{t('entryExit')} {t('content')} {t('coming')} {t('soon')}</p>
+                </div>
+              </div>
+            </section>
           )}
         </aside>
         <section className="lg:col-span-9 flex flex-col space-y-4 h-full overflow-y-auto min-h-0 scrollbar-hide">
