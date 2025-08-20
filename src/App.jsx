@@ -1,7 +1,10 @@
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useLang } from './useLang';
 import MapView from './MapView';
+import { ChatbotProvider } from './contexts/ChatbotContext.jsx';
+import Chatbot from './components/Chatbot.jsx';
+import { findLocationByName, findLocationByNameAsync } from './utils/mapDataUtils';
 import { MapPin, Hotel, Landmark, Info, Menu, X, Globe, Filter, ParkingCircle, UsersRound, MessageSquare, Layers, Sun, Moon, CalendarDays, Zap, Clock, Droplets, Navigation, Search, BadgePlus, MapIcon, ArrowLeft, AlertTriangle, ShieldAlert, Phone, Eye } from 'lucide-react';
 import { Diya, MandalaBG, NavPill, Chip, TogglePill } from './themeComponents';
 import { templesData } from './templesData';
@@ -12,7 +15,8 @@ import { emergencyInfoData } from './emergencyInfoData';
 function App() {
   const { lang, setLang, t } = useLang();
   const [open, setOpen] = React.useState(false);
-  const [showAI, setShowAI] = React.useState(false);
+  // Legacy AI overlay removed in favor of Chatbot component
+  // const [showAI, setShowAI] = React.useState(false);
   const [showAnnouncement, setShowAnnouncement] = React.useState(true); // show popup each load
   const [activeTab, setActiveTab] = React.useState('Home');
   const [dark, setDark] = React.useState(true);
@@ -51,8 +55,32 @@ function App() {
     stayTents: false,
   });
   const [dayType, setDayType] = React.useState('Regular Day');
+  const mapRef = useRef(null);
 
   const toggleFilter = (k) => setFilters(f => ({ ...f, [k]: !f[k] }));
+
+  // Center map on known location name and enable relevant layer/tab
+  const centerMapOn = async (locationName) => {
+    if (!mapRef.current || !locationName) return false;
+    // Try local datasets first, then ArcGIS
+    let loc = findLocationByName(locationName);
+    if (!loc?.position) {
+      loc = await findLocationByNameAsync(locationName);
+    }
+    if (loc?.position) {
+      mapRef.current.panTo?.(loc.position);
+      mapRef.current.setZoom?.(17);
+      if (loc.type === 'ghat' && !filters.ghats) setFilters(p => ({ ...p, ghats: true }));
+      if (loc.type === 'temple' && !filters.temples) setFilters(p => ({ ...p, temples: true }));
+      if (loc.type === 'accommodation' && !filters.hotels) setFilters(p => ({ ...p, hotels: true }));
+      if (loc.type === 'ghat') setActiveTab(t('ghats'));
+      if (loc.type === 'temple') setActiveTab(t('temples'));
+      if (loc.type === 'accommodation') setActiveTab(t('accommodation'));
+      if (loc.type === 'emergency') setActiveTab(t('entryExit'));
+      return true;
+    }
+    return false;
+  };
 
   // Effect to automatically toggle temples layer when on Temples tab
   React.useEffect(() => {
@@ -63,7 +91,8 @@ function App() {
   }, [activeTab, filters.temples, t]);
 
   return (
-    <div className={`min-h-screen h-screen ${dark ? 'bg-gradient-to-b from-[#0B1026] via-[#12173A] to-[#1A1240]' : 'bg-gradient-to-b from-amber-50 via-white to-rose-50'} text-indigo-50 flex flex-col`}>
+  <ChatbotProvider mapRef={mapRef} filters={filters} setFilters={setFilters} centerMapOn={centerMapOn}>
+  <div className={`min-h-screen h-screen ${dark ? 'bg-gradient-to-b from-[#0B1026] via-[#12173A] to-[#1A1240]' : 'bg-gradient-to-b from-amber-50 via-white to-rose-50'} text-indigo-50 flex flex-col`}>
       <header className="sticky top-0 z-50 border-b border-indigo-400/20 bg-indigo-950/60 backdrop-blur">
         <div className="absolute inset-0 pointer-events-none"><MandalaBG /></div>
         <div className="relative max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
@@ -761,7 +790,7 @@ function App() {
         </aside>
         <section className="lg:col-span-9 flex flex-col space-y-4 h-full overflow-y-auto min-h-0 scrollbar-hide">
           <div className="relative flex-1 min-h-[560px] rounded-3xl overflow-hidden border border-indigo-300/25 bg-indigo-900/40">
-            <MapView layers={filters} toggleLayer={toggleFilter} />
+            <MapView ref={mapRef} layers={filters} toggleLayer={toggleFilter} />
           </div>
           <div className="mt-2 border-t border-indigo-400/20 pt-4 pb-6 text-sm text-indigo-200 flex flex-wrap items-center justify-between gap-2">
             <p>{t('copyright')} • {t('midnightAarti')}</p>
@@ -783,28 +812,7 @@ function App() {
       )}
 
 
-      <div
-        aria-label="Open AI Assistant"
-        onClick={() => setShowAI(true)}
-        className="fixed bottom-5 right-5 z-40 group cursor-pointer"
-      >
-        {/* Default state is just the orange circle with Diya */}
-        <div 
-          className="h-14 w-14 rounded-full bg-gradient-to-br from-amber-400 to-rose-400 shadow-xl flex items-center justify-center group-hover:hidden transition-all"
-        >
-          <Diya className="w-8 h-8" />
-        </div>
-        
-        {/* Hover state shows the orange pill with text */}
-        <div 
-          className="hidden group-hover:flex items-center px-4 py-3 rounded-full bg-gradient-to-r from-amber-400 to-rose-400 shadow-xl transition-all"
-        >
-          <div className="flex items-center justify-center rounded-full bg-indigo-700 w-7 h-7 mr-3">
-            <Diya className="w-5 h-5" />
-          </div>
-          <span className="text-base font-semibold text-indigo-950">{t('aiAsk')}</span>
-        </div>
-      </div>
+  {/* Chatbot trigger is provided by <Chatbot /> */}
 
       {showAnnouncement && (() => {
         if (!window.__announcementTimer) {
@@ -839,38 +847,12 @@ function App() {
         );
       })()}
 
-      {showAI && (
-        <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowAI(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-indigo-950/95 text-indigo-50 shadow-2xl flex flex-col">
-            <div className="p-4 border-b border-indigo-400/20 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-amber-300" />
-                <span className="font-semibold">{t('aiTitle')}</span>
-              </div>
-              <button onClick={() => setShowAI(false)}>
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-4 space-y-3 overflow-auto flex-1">
-              <div className="text-xs text-amber-200">{t('aiContext')}</div>
-              <div className="bg-indigo-900/60 border border-indigo-300/25 rounded-2xl p-3 text-sm">
-                {t('aiPrompt')}
-              </div>
-            </div>
-            <div className="p-3 border-t border-indigo-400/20 flex gap-2">
-              <input
-                className="flex-1 px-3 py-2 rounded-xl bg-indigo-900/60 border border-indigo-300/25 placeholder-indigo-200/70"
-                placeholder={t('aiPlaceholder')}
-              />
-              <button className="px-4 py-2 rounded-xl bg-amber-400 text-indigo-950">{t('send')}</button>
-            </div>
-          </div>
-        </div>
-      )}
+  {/* Legacy AI overlay removed */}
 
       {/* Footer moved inside right scroll column */}
+      <Chatbot />
     </div>
+    </ChatbotProvider>
   );
 }
 

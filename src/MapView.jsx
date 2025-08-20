@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLang } from './useLang';
 import { Loader } from '@googlemaps/js-api-loader';
 
 // layers prop: { ghats, temples, wards, restaurants, hospitals, hotels }
 // Default: all off; parent controls activation
-const MapView = ({ layers = { ghats: false, temples: false, wards: false, restaurants: false, hospitals: false, hotels: false }, toggleLayer }) => {
+const MapView = React.forwardRef(({ layers = { ghats: false, temples: false, wards: false, restaurants: false, hospitals: false, hotels: false }, toggleLayer }, ref) => {
   const { t } = useLang();
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -53,6 +53,15 @@ const MapView = ({ layers = { ghats: false, temples: false, wards: false, restau
         streetViewControl: false,
       });
       mapInstanceRef.current = mapInstance;
+      // expose minimal controls for external consumers (chatbot)
+      if (ref) {
+        ref.current = {
+          getCenter: () => mapInstance.getCenter()?.toJSON?.(),
+          getZoom: () => mapInstance.getZoom(),
+          setZoom: (z) => mapInstance.setZoom(z),
+          panTo: (pos) => mapInstance.panTo(pos),
+        };
+      }
       infoWindowRef.current = new google.maps.InfoWindow();
 
       // Independent data layers
@@ -374,6 +383,6 @@ const MapView = ({ layers = { ghats: false, temples: false, wards: false, restau
       <div ref={mapRef} className="w-full h-full" />
     </div>
   );
-};
+});
 
 export default MapView;
