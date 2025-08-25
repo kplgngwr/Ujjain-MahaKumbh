@@ -1,7 +1,5 @@
 // Vercel Serverless Function for chat — mirrors the Express /api/chat handler
 
-export const config = { runtime: 'nodejs18.x' };
-
 const MODEL = process.env.GEMINI_MODEL || 'models/gemini-2.5-pro';
 const MODEL_FALLBACKS = [
   MODEL,

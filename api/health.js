@@ -1,5 +1,3 @@
-export const config = { runtime: 'nodejs18.x' };
-
 function getApiKey() {
   return process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
 }
