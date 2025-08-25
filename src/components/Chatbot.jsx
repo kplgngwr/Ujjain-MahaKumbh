@@ -59,7 +59,7 @@ export default function Chatbot() {
                   <Sparkles className="w-3.5 h-3.5 text-indigo-900" />
                 </div>
               )}
-              {m.content}
+              {m.content || 'Sorry, I hit an error—please retry.'}
             </div>
           ))}
           {loading && (

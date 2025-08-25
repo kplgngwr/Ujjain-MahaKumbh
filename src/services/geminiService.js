@@ -51,6 +51,7 @@ Available layers: ${Object.keys(systemContext.layers || {}).join(', ')}`;
       'models/gemini-1.5-flash'
     ];
     let data = null;
+        // Note: client now calls /api/chat; this module can be used for direct calls if needed
     let lastErr = null;
     for (const model of candidates) {
       try {
